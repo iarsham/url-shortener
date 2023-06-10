@@ -1,0 +1,41 @@
+version: '3.9'
+
+x-base:
+  &base
+  env_file:
+    - ./.env
+  restart: always
+  networks:
+    - url-shortener
+
+services:
+   db:
+    <<: *base
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+    volumes:
+      - db_data:/var/lib/mysql
+    expose:
+      - 3306
+
+   backend:
+    <<: *base
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+      
+volumes:
+  db_data:
+
+networks:
+  url-shortener:
