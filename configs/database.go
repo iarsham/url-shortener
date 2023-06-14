@@ -6,7 +6,11 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"github.com/iarsham/url-shortener/models"
 )
+
+var DB *gorm.DB
 
 func GetDB() (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
@@ -15,9 +19,12 @@ func GetDB() (*gorm.DB, error) {
 		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"),
 		os.Getenv("DB_NAME"),
 	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err.Error())
 	}
-	return db, nil
+	DB.AutoMigrate(&models.User{})
+	Logger.Println("Tables migrations was successfully")
+	return DB, nil
 }
