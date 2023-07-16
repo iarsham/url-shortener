@@ -31,3 +31,8 @@ func (u *userRepository) GetUserByID(userID string) (models.User, error) {
 	err := u.db.Where("id = ?", userID).First(&dbUser).Error
 	return dbUser, err
 }
+
+func (u *userRepository) Delete(user *models.User) error {
+	err := u.db.Delete(&user).Error
+	return err
+}

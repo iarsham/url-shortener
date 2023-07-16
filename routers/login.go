@@ -12,7 +12,7 @@ func LoginRouter(db *gorm.DB, r *gin.RouterGroup) {
 	userRepo := services.UserRepositoryImpl(db)
 
 	loginController := &controllers.LoginController{
-		LoginService: services.LoginServiceImpl(userRepo),
+		LoginService: services.LoginRepositoryImpl(userRepo),
 	}
 
 	r.POST("/login", loginController.LoginHandler)

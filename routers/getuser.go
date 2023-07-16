@@ -8,12 +8,12 @@ import (
 	"github.com/iarsham/url-shortener/services"
 )
 
-func SignUpRouter(db *gorm.DB, r *gin.RouterGroup) {
+func GetUserRouter(db *gorm.DB, r *gin.RouterGroup) {
 	userRepo := services.UserRepositoryImpl(db)
 
-	signUpContoller := &controllers.SignUpController{
-		SignUpService: services.SignUpRepositoryImpl(userRepo),
+	GetUserController := &controllers.GetUserController{
+		UserService: userRepo,
 	}
 
-	r.POST("/signup", signUpContoller.SignUpHandler)
+	r.GET("/me", GetUserController.GetUserHandler)
 }

@@ -10,7 +10,7 @@ type signUpService struct {
 	userRepository domain.UserRepository
 }
 
-func SignUpServiceImpl(userRepository domain.UserRepository) domain.SignUpRepository {
+func SignUpRepositoryImpl(userRepository domain.UserRepository) domain.SignUpRepository {
 	return &signUpService{
 		userRepository: userRepository,
 	}
