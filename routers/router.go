@@ -2,14 +2,11 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-
-	"github.com/iarsham/url-shortener/controllers"
+	"gorm.io/gorm"
 )
 
-func UrlRouter(r *gin.Engine) {
-	userRoutes := r.Group("/api/user/")
-
-	userRoutes.POST("register/", controllers.RegisterHandler)
-	userRoutes.POST("login/", controllers.LoginHandler)
-
+func SetupRouters(db *gorm.DB, gin *gin.Engine) {
+	authRoute := gin.Group("/api/auth")
+	SignUpRouter(db, authRoute)
+	LoginRouter(db, authRoute)
 }

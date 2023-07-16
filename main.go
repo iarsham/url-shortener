@@ -21,7 +21,6 @@ func init() {
 func main() {
 	server := gin.Default()
 	server.Use(gin.Recovery())
-
-	routers.UrlRouter(server)
+	routers.SetupRouters(configs.DB, server)
 	server.Run(":8000")
 }

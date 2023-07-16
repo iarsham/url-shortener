@@ -2,8 +2,9 @@ package models
 
 import (
 	"github.com/google/uuid"
-	"github.com/iarsham/url-shortener/helpers"
 	"gorm.io/gorm"
+
+	"github.com/iarsham/url-shortener/helpers"
 )
 
 type User struct {
