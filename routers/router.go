@@ -16,4 +16,5 @@ func SetupRouters(db *gorm.DB, gin *gin.Engine) {
 	userRoute.Use(helpers.JwtAuthMiddelware())
 	GetUserRouter(db, userRoute)
 	DeleteUserRouter(db, userRoute)
+	PasswordRouter(db, userRoute)
 }

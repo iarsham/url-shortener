@@ -28,5 +28,5 @@ func (s *signUpService) CreateAccessToken(userID, email string) string {
 	return helpers.GenerateJWT(userID, email)
 }
 func (s *signUpService) EncryptPassword(password string) (string, error) {
-	return helpers.Hash(password)
+	return s.userRepository.EncryptPassword(password)
 }

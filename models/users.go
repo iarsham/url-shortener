@@ -13,10 +13,6 @@ type User struct {
 	gorm.Model
 }
 
-type UserLogin struct {
-	BaseUser
-}
-
 func (u *User) HashUserPassword(tx *gorm.DB) error {
 	_, err := helpers.Hash(u.UserInfo.Password)
 	if err != nil {

@@ -25,6 +25,7 @@ func (g *GetUserController) GetUserHandler(ctx *gin.Context) {
 	userResponse := entity.UserResponse{
 		ID:        user.ID,
 		Email:     user.UserInfo.Email,
+		IsActive:  user.UserInfo.IsActive,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}
