@@ -27,6 +27,11 @@ func (s *signUpService) GetUserByEmail(email string) (models.User, error) {
 func (s *signUpService) CreateAccessToken(userID, email string) string {
 	return helpers.GenerateJWT(userID, email)
 }
+
 func (s *signUpService) EncryptPassword(password string) (string, error) {
 	return s.userRepository.EncryptPassword(password)
+}
+
+func (s *signUpService)SendVerifyEmail(email string) error{
+	return s.userRepository.SendVerifyEmail(email)
 }

@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -33,6 +34,19 @@ func JwtAuthMiddelware() gin.HandlerFunc {
 
 		ctx.Set("user_id", cliams["user_id"])
 		ctx.Set("email", cliams["email"])
+		ctx.Next()
+	}
+}
+
+func QueryParamMiddelware(param string) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		queryParam := ctx.Query(param)
+
+		if queryParam == "" {
+			ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{"response": fmt.Sprintf("missing ( ?%s= ) query parameter", param)})
+			return
+		}
+
 		ctx.Next()
 	}
 }

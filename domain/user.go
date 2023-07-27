@@ -9,4 +9,6 @@ type UserRepository interface {
 	Delete(user *models.User) error
 	EncryptPassword(password string) (string, error)
 	Save(user *models.User) error
+	SendVerifyEmail(email string) error
+	GetUserFromCache(key string) (models.User, error)
 }

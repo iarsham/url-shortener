@@ -1,6 +1,12 @@
 package services
 
 import (
+	"context"
+	"os"
+	"strconv"
+	"time"
+
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
 	"github.com/iarsham/url-shortener/domain"
@@ -9,11 +15,12 @@ import (
 )
 
 type userRepository struct {
-	db *gorm.DB
+	db  *gorm.DB
+	rdb *redis.Client
 }
 
-func UserRepositoryImpl(db *gorm.DB) domain.UserRepository {
-	return &userRepository{db: db}
+func UserRepositoryImpl(db *gorm.DB, rdb *redis.Client) domain.UserRepository {
+	return &userRepository{db: db, rdb: rdb}
 }
 
 func (u *userRepository) Create(user *models.User) error {
@@ -45,4 +52,25 @@ func (u *userRepository) EncryptPassword(password string) (string, error) {
 func (u *userRepository) Save(user *models.User) error {
 	err := u.db.Save(&user).Error
 	return err
+}
+
+func (u *userRepository) SendVerifyEmail(email string) error {
+	key, err := helpers.SendVerify(email)
+	ttl, _ := strconv.Atoi(os.Getenv("EXPIRE_VERIFY_LINK_Minutes"))
+	u.rdb.Set(context.Background(), key, email, time.Minute*time.Duration(ttl))
+	return err
+}
+
+func (u *userRepository) GetUserFromCache(key string) (models.User, error) {
+	var dbUser models.User
+	value, err := u.rdb.Get(context.Background(), key).Result()
+	if err != nil {
+		return dbUser, err
+	}
+	dbUser, err = u.GetUserByEmail(value)
+	if err != nil {
+		return dbUser, err
+	}
+	u.rdb.Del(context.Background(), key)
+	return dbUser, nil
 }

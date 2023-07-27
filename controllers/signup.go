@@ -43,7 +43,8 @@ func (s *SignUpController) SignUpHandler(ctx *gin.Context) {
 		return
 	}
 
+	go s.SignUpService.SendVerifyEmail(data.Email)
+	
 	accessToken := s.SignUpService.CreateAccessToken(newUser.ID.String(), data.Email)
 	ctx.JSON(http.StatusCreated, gin.H{"access_token": accessToken})
-
 }
