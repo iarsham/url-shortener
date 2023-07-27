@@ -21,6 +21,19 @@ services:
       - db_data:/var/lib/mysql
     expose:
       - 3306
+    
+    
+   redis:
+    <<: *base
+    image: redis:latest
+    container_name: redis
+    volumes:
+    - redis_data:/data
+    expose:
+      - 6319
+    depends_on:
+      - db
+
 
    backend:
     <<: *base
@@ -32,10 +45,11 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
 
-      
 volumes:
   db_data:
+  redis_data:
 
 networks:
   url-shortener:

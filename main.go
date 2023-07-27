@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
@@ -9,18 +11,18 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		panic("environment variables file error!")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("error in loading .env file")
 	}
-	_, err := configs.GetDB()
-	if err == nil {
-		configs.Logger.Println("Mysql is Connected Successfuly!")
-	}
+	configs.GetDB()
+	configs.GetRedis()
 }
 
 func main() {
 	server := gin.Default()
 	server.Use(gin.Recovery())
-	routers.SetupRouters(configs.DB, server)
+	server.Use(gin.Logger())
+	routers.SetupRouters(configs.DB, configs.GetRedis(), server)
 	server.Run(":8000")
 }

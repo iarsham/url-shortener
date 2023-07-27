@@ -1,9 +1,9 @@
 package configs
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
@@ -11,20 +11,26 @@ import (
 )
 
 var DB *gorm.DB
+var RDB *redis.Client
 
 func GetDB() (*gorm.DB, error) {
-	dsn := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		os.Getenv("DB_USER"), os.Getenv("DB_PASS"),
-		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
-	)
 	var err error
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(os.Getenv("DB_URL")), &gorm.Config{})
 	if err != nil {
 		panic(err.Error())
 	}
+	Logger.Println("Mysql is Connected Successfuly!")
 	DB.AutoMigrate(&models.User{})
 	Logger.Println("Tables migrations was successfully")
 	return DB, nil
+}
+
+func GetRedis() *redis.Client {
+	RDB = redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+	Logger.Println("Redis is Connected Successfuly!")
+	return RDB
 }
