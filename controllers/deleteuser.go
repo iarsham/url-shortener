@@ -17,6 +17,9 @@ type DeleteUserController struct {
 // @Tags			User
 // @Accept			json
 // @Router			/user/delete-user/ [delete]
+// @Success			204		{string}	string
+// @Failure			404		{object}	entity.User404Responsse
+// @Failure			500		{object}	entity.DBErrorResponse
 func (d *DeleteUserController) DeleteUserHandler(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 

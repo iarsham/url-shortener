@@ -12,12 +12,17 @@ import (
 type LoginController struct {
 	LoginService domain.LoginRepository
 }
+
 // @Summary 		Login User
 // @Description		Login user with email and password
 // @Tags			Auth
 // @Accept			json
 // @Router			/auth/login/ [post]
 // @Param 			request body entity.Authenticate true "Login Data"
+// @Success			200		{object}	entity.LoginSignUpOkResponse
+// @Failure			400		{object}	entity.DataBodyResponse
+// @Failure			401		{object}	entity.PasswordIncorrectResponsse
+// @Failure			404		{object}	entity.User404Responsse
 func (l *LoginController) LoginHandler(ctx *gin.Context) {
 	var data entity.Authenticate
 

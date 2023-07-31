@@ -40,7 +40,32 @@ const docTemplate = `{
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.LoginSignUpOkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.DataBodyResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.PasswordIncorrectResponsse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User404Responsse"
+                        }
+                    }
+                }
             }
         },
         "/auth/signup/": {
@@ -64,7 +89,32 @@ const docTemplate = `{
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.LoginSignUpOkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.DataBodyResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/entity.UserExistResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.DBErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/auth/verify-user/": {
@@ -86,7 +136,32 @@ const docTemplate = `{
                         "required": true
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.VerifyOKResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.DBErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AlreadyVerifiedResponse"
+                        }
+                    },
+                    "410": {
+                        "description": "Gone",
+                        "schema": {
+                            "$ref": "#/definitions/entity.LinkExpireResponse"
+                        }
+                    }
+                }
             }
         },
         "/user/change-password/": {
@@ -99,7 +174,32 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Change Password",
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.PasswordOkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.NewPasswordEqualResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.IncorrectCurrentPasswordResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.DBErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/user/delete-user/": {
@@ -112,7 +212,26 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Delete User",
-                "responses": {}
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User404Responsse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.DBErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/user/me/": {
@@ -125,11 +244,33 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get User",
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.UserResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User404Responsse"
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
+        "entity.AlreadyVerifiedResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "user already verified"
+                }
+            }
+        },
         "entity.Authenticate": {
             "type": "object",
             "required": [
@@ -145,6 +286,125 @@ const docTemplate = `{
                     "type": "string",
                     "minLength": 8,
                     "example": "password!@#123"
+                }
+            }
+        },
+        "entity.DBErrorResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "failed to save data to db"
+                }
+            }
+        },
+        "entity.DataBodyResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "body properties required"
+                }
+            }
+        },
+        "entity.IncorrectCurrentPasswordResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "current password is incorrect"
+                }
+            }
+        },
+        "entity.LinkExpireResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "link is invalid or expired"
+                }
+            }
+        },
+        "entity.LoginSignUpOkResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImI0Y2MzODE4NDk2QG15bWFpbHkubG9sIiwiZXhwIjoxNjkwOTIxNjMxLCJ1c2VyX2lkIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIn0.Vs2BXM2Z6hr4zqLLWe08FrpKhDfRpnaFhu4TKB5Spb4"
+                }
+            }
+        },
+        "entity.NewPasswordEqualResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "new passwords must be equal"
+                }
+            }
+        },
+        "entity.PasswordIncorrectResponsse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "password is incorrect"
+                }
+            }
+        },
+        "entity.PasswordOkResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "password changed successfully"
+                }
+            }
+        },
+        "entity.User404Responsse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "user not found"
+                }
+            }
+        },
+        "entity.UserExistResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "user with this email already exists"
+                }
+            }
+        },
+        "entity.UserResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.VerifyOKResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "user verified successfully"
                 }
             }
         }

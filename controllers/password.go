@@ -18,6 +18,11 @@ type PasswordController struct {
 // @Tags			User
 // @Accept			json
 // @Router			/user/change-password/ [post]
+// @Success			200		{object}	entity.PasswordOkResponse
+// @Failure			400		{object}	entity.DataBodyResponse
+// @Failure			401		{object}	entity.IncorrectCurrentPasswordResponse
+// @Failure			400		{object}	entity.NewPasswordEqualResponse
+// @Failure			500		{object}	entity.DBErrorResponse
 func (p *PasswordController) PasswordChangeHandler(ctx *gin.Context) {
 	var data entity.PasswordRequest
 	user_id := ctx.GetString("user_id")

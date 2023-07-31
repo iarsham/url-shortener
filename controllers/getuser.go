@@ -18,6 +18,8 @@ type GetUserController struct {
 // @Tags			User
 // @Accept			json
 // @Router			/user/me/ [get]
+// @Success			200		{object}	entity.UserResponse
+// @Failure			404		{object}	entity.User404Responsse
 func (g *GetUserController) GetUserHandler(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 

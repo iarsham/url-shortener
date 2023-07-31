@@ -1,5 +1,11 @@
 basePath: /api/
 definitions:
+  entity.AlreadyVerifiedResponse:
+    properties:
+      response:
+        example: user already verified
+        type: string
+    type: object
   entity.Authenticate:
     properties:
       email:
@@ -12,6 +18,85 @@ definitions:
     required:
     - email
     - password
+    type: object
+  entity.DBErrorResponse:
+    properties:
+      response:
+        example: failed to save data to db
+        type: string
+    type: object
+  entity.DataBodyResponse:
+    properties:
+      response:
+        example: body properties required
+        type: string
+    type: object
+  entity.IncorrectCurrentPasswordResponse:
+    properties:
+      response:
+        example: current password is incorrect
+        type: string
+    type: object
+  entity.LinkExpireResponse:
+    properties:
+      response:
+        example: link is invalid or expired
+        type: string
+    type: object
+  entity.LoginSignUpOkResponse:
+    properties:
+      response:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImI0Y2MzODE4NDk2QG15bWFpbHkubG9sIiwiZXhwIjoxNjkwOTIxNjMxLCJ1c2VyX2lkIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIn0.Vs2BXM2Z6hr4zqLLWe08FrpKhDfRpnaFhu4TKB5Spb4
+        type: string
+    type: object
+  entity.NewPasswordEqualResponse:
+    properties:
+      response:
+        example: new passwords must be equal
+        type: string
+    type: object
+  entity.PasswordIncorrectResponsse:
+    properties:
+      response:
+        example: password is incorrect
+        type: string
+    type: object
+  entity.PasswordOkResponse:
+    properties:
+      response:
+        example: password changed successfully
+        type: string
+    type: object
+  entity.User404Responsse:
+    properties:
+      response:
+        example: user not found
+        type: string
+    type: object
+  entity.UserExistResponse:
+    properties:
+      response:
+        example: user with this email already exists
+        type: string
+    type: object
+  entity.UserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      updated_at:
+        type: string
+    type: object
+  entity.VerifyOKResponse:
+    properties:
+      response:
+        example: user verified successfully
+        type: string
     type: object
 host: localhost:8000
 info:
@@ -33,7 +118,23 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/entity.Authenticate'
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.LoginSignUpOkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.DataBodyResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.PasswordIncorrectResponsse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.User404Responsse'
       summary: Login User
       tags:
       - Auth
@@ -49,7 +150,23 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/entity.Authenticate'
-      responses: {}
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.LoginSignUpOkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.DataBodyResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/entity.UserExistResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.DBErrorResponse'
       summary: Register User
       tags:
       - Auth
@@ -64,7 +181,23 @@ paths:
         name: key
         required: true
         type: string
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.VerifyOKResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.DBErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/entity.AlreadyVerifiedResponse'
+        "410":
+          description: Gone
+          schema:
+            $ref: '#/definitions/entity.LinkExpireResponse'
       summary: Verify User Account
       tags:
       - Auth
@@ -73,7 +206,23 @@ paths:
       consumes:
       - application/json
       description: Change user password with current and new password
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.PasswordOkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.NewPasswordEqualResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.IncorrectCurrentPasswordResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.DBErrorResponse'
       summary: Change Password
       tags:
       - User
@@ -82,7 +231,19 @@ paths:
       consumes:
       - application/json
       description: Delete user record from db
-      responses: {}
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.User404Responsse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.DBErrorResponse'
       summary: Delete User
       tags:
       - User
@@ -91,7 +252,15 @@ paths:
       consumes:
       - application/json
       description: Get user data information
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.UserResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.User404Responsse'
       summary: Get User
       tags:
       - User

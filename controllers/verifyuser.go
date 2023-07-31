@@ -18,6 +18,10 @@ type VerifyUserController struct {
 // @Accept			json
 // @Router			/auth/verify-user/ [post]
 // @Param key query string true "verification query param"
+// @Success			200		{object}	entity.VerifyOKResponse
+// @Failure			410		{object}	entity.LinkExpireResponse
+// @Failure			409		{object}	entity.AlreadyVerifiedResponse
+// @Failure			400		{object}	entity.DBErrorResponse
 func (v *VerifyUserController) VerifyUserHandler(ctx *gin.Context) {
 	keyParam := ctx.Query("key")
 	user, err := v.VerifyUserService.GetUserFromCache(keyParam)
