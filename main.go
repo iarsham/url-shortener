@@ -19,6 +19,19 @@ func init() {
 	configs.GetRedis()
 }
 
+// @title			UrlShortener Swagger Document
+// @version			1.0
+// @termsOfService  http://swagger.io/terms/
+// @contact.email   arshamdev2001@gmail.com
+// @BasePath	 	/api/
+// @host			localhost:8000
+// @licence.Name	MIT
+// @licence.url     https://www.mit.edu/~amini/LICENSE.md
+// @schemes			http https
+// @securityDefinitions.apikey Authorization
+// @in header
+// @name Authorization
+// @accept json
 func main() {
 	server := gin.Default()
 	server.Use(gin.Recovery())

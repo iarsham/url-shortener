@@ -12,6 +12,11 @@ type DeleteUserController struct {
 	UserSerivce domain.UserRepository
 }
 
+// @Summary 		Delete User
+// @Description		Delete user record from db
+// @Tags			User
+// @Accept			json
+// @Router			/user/delete-user/ [delete]
 func (d *DeleteUserController) DeleteUserHandler(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 

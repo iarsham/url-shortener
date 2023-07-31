@@ -12,6 +12,12 @@ type VerifyUserController struct {
 	VerifyUserService domain.VerifyUserRepository
 }
 
+// @Summary 		Verify User Account
+// @Description		send verification link key in query param to active user
+// @Tags			Auth
+// @Accept			json
+// @Router			/auth/verify-user/ [post]
+// @Param key query string true "verification query param"
 func (v *VerifyUserController) VerifyUserHandler(ctx *gin.Context) {
 	keyParam := ctx.Query("key")
 	user, err := v.VerifyUserService.GetUserFromCache(keyParam)

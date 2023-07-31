@@ -13,6 +13,11 @@ type GetUserController struct {
 	UserService domain.UserRepository
 }
 
+// @Summary 		Get User
+// @Description		Get user data information
+// @Tags			User
+// @Accept			json
+// @Router			/user/me/ [get]
 func (g *GetUserController) GetUserHandler(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 

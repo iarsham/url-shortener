@@ -13,6 +13,11 @@ type PasswordController struct {
 	PasswordService domain.PasswordRepository
 }
 
+// @Summary 		Change Password
+// @Description		Change user password with current and new password
+// @Tags			User
+// @Accept			json
+// @Router			/user/change-password/ [post]
 func (p *PasswordController) PasswordChangeHandler(ctx *gin.Context) {
 	var data entity.PasswordRequest
 	user_id := ctx.GetString("user_id")

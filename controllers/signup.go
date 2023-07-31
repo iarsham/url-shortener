@@ -14,7 +14,12 @@ import (
 type SignUpController struct {
 	SignUpService domain.SignUpRepository
 }
-
+// @Summary 		Register User
+// @Description		register user with email and password and sending verfication email
+// @Tags			Auth
+// @Accept			json
+// @Router			/auth/signup/ [post]
+// @Param 			request body entity.Authenticate true "Register Data"
 func (s *SignUpController) SignUpHandler(ctx *gin.Context) {
 	var data entity.Authenticate
 
