@@ -12,8 +12,8 @@ const (
 	CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
 
-func generateKey() string {
-	key := make([]byte, 30)
+func generateKey(l int) string {
+	key := make([]byte, l)
 	for i := range key {
 		key[i] = CHARSET[rand.Intn(len(CHARSET))]
 	}
@@ -37,7 +37,7 @@ func SendVerify(email string) (string,error) {
 		subject  = "Verify Your Account"
 	)
 
-	key := generateKey()
+	key := generateKey(30)
 	link := generateVerifyLink(key)
 	auth := smtp.PlainAuth("", from, password, host)
 

@@ -20,7 +20,7 @@ func GetDB() (*gorm.DB, error) {
 		panic(err.Error())
 	}
 	Logger.Println("Mysql is Connected Successfuly!")
-	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.User{}, &models.Link{})
 	Logger.Println("Tables migrations was successfully")
 	return DB, nil
 }

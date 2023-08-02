@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"log"
+	"net/url"
 	"os"
 	"time"
 
@@ -38,4 +39,18 @@ func GenerateJWT(userId, email string) (tokenString string) {
 		log.Fatal("generate jwt failed :", err)
 	}
 	return
+}
+
+func GenerateShortUrl() string {
+	domain := os.Getenv("DOMAIN")
+	key := generateKey(7)
+	return domain + "/" + key
+}
+
+func IsValidURL(u string) bool {
+	parsedURL, err := url.ParseRequestURI(u)
+	if err != nil {
+		return false
+	}
+	return parsedURL.Scheme == "http" || parsedURL.Scheme == "https"
 }
