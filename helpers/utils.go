@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -28,10 +29,11 @@ func VerifyHash(hash string, plain string) (bool, error) {
 }
 
 func GenerateJWT(userId, email string) (tokenString string) {
+	ttl, _ := strconv.Atoi(os.Getenv("EXPIRE_JWT_TOKEN_Minutes"))
 	cliams := jwt.MapClaims{
 		"user_id": userId,
 		"email":   email,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
+		"exp":     time.Now().Add(time.Minute * time.Duration(ttl)).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &cliams)
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
