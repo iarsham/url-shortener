@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
@@ -36,6 +37,7 @@ func main() {
 	server := gin.Default()
 	server.Use(gin.Recovery())
 	server.Use(gin.Logger())
+	server.Use(cors.Default())
 	routers.SetupRouters(configs.DB, configs.GetRedis(), server)
 	server.Run(":8000")
 }
