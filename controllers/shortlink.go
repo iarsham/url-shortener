@@ -33,11 +33,12 @@ func (s *ShortLinkController) CreateShortLinkHandler(ctx *gin.Context) {
 		return
 	}
 
-	newLink := models.Link{LongUrl: data.URL, UserID: userID}
+	newLink := models.Link{LongUrl: data.URL, ShortUrl: s.ShortLinkService.RandomShortURL(ctx), UserID: userID}
 
-	if err := s.ShortLinkService.CreateShortLink(&newLink); err != nil {
+	if err := s.ShortLinkService.CreateShortLink(&newLink, ctx); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"response": "cant short long url"})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, gin.H{"response": newLink.ShortUrl})
 }

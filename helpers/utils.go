@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -43,16 +44,23 @@ func GenerateJWT(userId, email string) (tokenString string) {
 	return
 }
 
-func GenerateShortUrl() string {
-	domain := os.Getenv("DOMAIN")
-	key := generateKey(7)
-	return domain + "/" + key
-}
-
 func IsValidURL(u string) bool {
 	parsedURL, err := url.ParseRequestURI(u)
 	if err != nil {
 		return false
 	}
 	return parsedURL.Scheme == "http" || parsedURL.Scheme == "https"
+}
+
+func CurrentHost(ctx *gin.Context) string {
+	schema := "http://"
+	if ctx.Request.TLS != nil {
+		schema = "https://"
+	}
+	host := ctx.Request.Host
+	return schema + host + "/"
+}
+
+func MakeShortURL(ctx *gin.Context) string {
+	return CurrentHost(ctx) + generateKey(7)
 }

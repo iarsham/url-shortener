@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ import (
 )
 
 func RedirectToDocs(ctx *gin.Context) {
+	fmt.Println(ctx.Request.Host)
 	ctx.Redirect(http.StatusMovedPermanently, "/docs/index.html")
 }
 
@@ -37,4 +39,7 @@ func SetupRouters(db *gorm.DB, rdb *redis.Client, gin *gin.Engine) {
 	linkRoute := gin.Group("/api/link")
 	linkRoute.Use(helpers.JwtAuthMiddelware())
 	ShortLinkRouter(db, linkRoute)
+
+	linkRoute2 := gin.Group("")
+	LinkRedirectRouter(db, linkRoute2)
 }
