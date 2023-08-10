@@ -12,9 +12,11 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("error in loading .env file")
+	if gin.Mode() != gin.ReleaseMode {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("error in loading .env file")
+		}
 	}
 	configs.GetDB()
 	configs.GetRedis()
@@ -38,6 +40,6 @@ func main() {
 	server.Use(gin.Recovery())
 	server.Use(gin.Logger())
 	server.Use(cors.Default())
-	routers.SetupRouters(configs.DB, configs.GetRedis(), server)
+	routers.SetupRouters(configs.DB, configs.RDB, server)
 	server.Run(":8000")
 }

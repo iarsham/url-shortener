@@ -7,10 +7,7 @@ import (
 	"os"
 )
 
-const (
-	MIME    = "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-)
+const CHARSET string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 func generateKey(l int) string {
 	key := make([]byte, l)
@@ -21,14 +18,14 @@ func generateKey(l int) string {
 }
 
 func generateVerifyLink(key string) string {
-	domain := os.Getenv("DOMAIN")
+	domain := os.Getenv("FRONTEND_DOMAIN")
 	v := url.Values{}
 	v.Set("key", key)
 	link := domain + "/verify-email/?" + v.Encode()
 	return link
 }
 
-func SendVerify(email string) (string,error) {
+func SendVerify(email string) (string, error) {
 	var (
 		from     = os.Getenv("EMAIL_FROM")
 		password = os.Getenv("EMAIL_PASSWORD")
@@ -48,7 +45,7 @@ func SendVerify(email string) (string,error) {
 
 	err := smtp.SendMail(host+":"+port, auth, from, []string{email}, []byte(msg))
 	if err != nil {
-		return key,err
-	}	
-	return key,nil
+		return key, err
+	}
+	return key, nil
 }
