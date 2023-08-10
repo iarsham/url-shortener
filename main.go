@@ -12,9 +12,11 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("error in loading .env file")
+	if gin.Mode() != gin.ReleaseMode {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("error in loading .env file")
+		}
 	}
 	configs.GetDB()
 	configs.GetRedis()
