@@ -18,6 +18,7 @@ type PasswordController struct {
 // @Tags			User
 // @Accept			json
 // @Router			/user/change-password/ [post]
+// @Param 			request body entity.PasswordRequest true "Password change required body"
 // @Success			200		{object}	entity.PasswordOkResponse
 // @Failure			400		{object}	entity.DataBodyResponse
 // @Failure			401		{object}	entity.IncorrectCurrentPasswordResponse

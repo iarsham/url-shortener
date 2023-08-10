@@ -258,6 +258,17 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Change Password",
+                "parameters": [
+                    {
+                        "description": "Password change required body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.PasswordRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -453,6 +464,31 @@ const docTemplate = `{
                 "response": {
                     "type": "string",
                     "example": "password changed successfully"
+                }
+            }
+        },
+        "entity.PasswordRequest": {
+            "type": "object",
+            "required": [
+                "confirm_password",
+                "current_password",
+                "password"
+            ],
+            "properties": {
+                "confirm_password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "1qaz2wsx"
+                },
+                "current_password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "James!123"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "1qaz2wsx"
                 }
             }
         },
