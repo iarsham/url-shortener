@@ -15,5 +15,5 @@ func LinkRedirectRouter(db *gorm.DB, r *gin.RouterGroup) {
 		LinkRedirectService: linkRepo,
 	}
 
-	r.GET("/:url", linkRedirectController.LinkRedirectHandler)
+	r.GET("/:key", linkRedirectController.LinkRedirectHandler)
 }

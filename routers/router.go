@@ -37,9 +37,6 @@ func SetupRouters(db *gorm.DB, rdb *redis.Client, gin *gin.Engine) {
 	PasswordRouter(db, rdb, userRoute)
 
 	linkRoute := gin.Group("/api/link")
-	linkRoute.Use(helpers.JwtAuthMiddelware())
 	ShortLinkRouter(db, linkRoute)
-
-	linkRoute2 := gin.Group("")
-	LinkRedirectRouter(db, linkRoute2)
+	LinkRedirectRouter(db, linkRoute)
 }

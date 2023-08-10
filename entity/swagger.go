@@ -47,3 +47,22 @@ type NewPasswordEqualResponse struct {
 type IncorrectCurrentPasswordResponse struct {
 	Response string `json:"response" example:"current password is incorrect"`
 }
+
+type ShortLinkOkResponse struct {
+	Response string `json:"response" example:"http://domain/yjMl1vl"`
+}
+
+type ShortLinkDBErrorResponse struct {
+	Response string `json:"response" example:"cant short long url"`
+}
+
+type ShortLinkValidateResponse struct {
+	Response string `json:"response" example:"url is invalid"`
+}
+type ShortLinkExistsResponse struct {
+	Response string `json:"response" example:"url already exists"`
+}
+
+type ShortLinkNotExistsResponse struct {
+	Response string `json:"response" example:"url not found"`
+}

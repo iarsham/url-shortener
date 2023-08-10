@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -52,15 +51,11 @@ func IsValidURL(u string) bool {
 	return parsedURL.Scheme == "http" || parsedURL.Scheme == "https"
 }
 
-func CurrentHost(ctx *gin.Context) string {
-	schema := "http://"
-	if ctx.Request.TLS != nil {
-		schema = "https://"
+func MakeShortURL() (string, string) {
+	domain := os.Getenv("FRONTEND_DOMAIN")
+	key := generateKey(7)
+	if !IsValidURL(domain) {
+		panic("domain in env is not valid")
 	}
-	host := ctx.Request.Host
-	return schema + host + "/"
-}
-
-func MakeShortURL(ctx *gin.Context) string {
-	return CurrentHost(ctx) + generateKey(7)
+	return domain + key, key
 }

@@ -164,6 +164,90 @@ const docTemplate = `{
                 }
             }
         },
+        "/link/create-short": {
+            "post": {
+                "description": "Create a short url that redirect to your main url",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "URL"
+                ],
+                "summary": "Create Short URL",
+                "parameters": [
+                    {
+                        "description": "create short url required body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.LinkRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ShortLinkOkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ShortLinkValidateResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ShortLinkExistsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ShortLinkDBErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/link/{key}": {
+            "get": {
+                "description": "Redirect short url to your main url",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "URL"
+                ],
+                "summary": "Redirect URL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "url key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ShortLinkOkResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ShortLinkNotExistsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/change-password/": {
             "post": {
                 "description": "Change user password with current and new password",
@@ -325,6 +409,17 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.LinkRequest": {
+            "type": "object",
+            "required": [
+                "url"
+            ],
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.LoginSignUpOkResponse": {
             "type": "object",
             "properties": {
@@ -358,6 +453,51 @@ const docTemplate = `{
                 "response": {
                     "type": "string",
                     "example": "password changed successfully"
+                }
+            }
+        },
+        "entity.ShortLinkDBErrorResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "cant short long url"
+                }
+            }
+        },
+        "entity.ShortLinkExistsResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "url already exists"
+                }
+            }
+        },
+        "entity.ShortLinkNotExistsResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "url not found"
+                }
+            }
+        },
+        "entity.ShortLinkOkResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "http://domain/yjMl1vl"
+                }
+            }
+        },
+        "entity.ShortLinkValidateResponse": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string",
+                    "example": "url is invalid"
                 }
             }
         },

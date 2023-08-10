@@ -14,6 +14,17 @@ type ShortLinkController struct {
 	ShortLinkService domain.ShortLinkRepository
 }
 
+// @Summary 		Create Short URL
+// @Description		Create a short url that redirect to your main url
+// @Tags			URL
+// @Accept			json
+// @Router			/link/create-short	[post]
+// @Param 			request body entity.LinkRequest true "create short url required body"
+// @Success			200		{object}	entity.ShortLinkOkResponse
+// @Failure			400		{object}	entity.DataBodyResponse
+// @Failure			400		{object}	entity.ShortLinkValidateResponse
+// @Failure			409		{object}	entity.ShortLinkExistsResponse
+// @Failure			500		{object}	entity.ShortLinkDBErrorResponse
 func (s *ShortLinkController) CreateShortLinkHandler(ctx *gin.Context) {
 	var data entity.LinkRequest
 	userID := ctx.GetString("user_id")
@@ -33,9 +44,10 @@ func (s *ShortLinkController) CreateShortLinkHandler(ctx *gin.Context) {
 		return
 	}
 
-	newLink := models.Link{LongUrl: data.URL, ShortUrl: s.ShortLinkService.RandomShortURL(ctx), UserID: userID}
+	shortLink, key := s.ShortLinkService.RandomShortURL()
+	newLink := models.Link{LongUrl: data.URL, ShortUrl: shortLink, Keyword: key, UserID: userID}
 
-	if err := s.ShortLinkService.CreateShortLink(&newLink, ctx); err != nil {
+	if err := s.ShortLinkService.CreateShortLink(&newLink); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"response": "cant short long url"})
 		return
 	}

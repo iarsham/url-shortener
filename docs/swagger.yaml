@@ -43,6 +43,13 @@ definitions:
         example: link is invalid or expired
         type: string
     type: object
+  entity.LinkRequest:
+    properties:
+      url:
+        type: string
+    required:
+    - url
+    type: object
   entity.LoginSignUpOkResponse:
     properties:
       response:
@@ -65,6 +72,36 @@ definitions:
     properties:
       response:
         example: password changed successfully
+        type: string
+    type: object
+  entity.ShortLinkDBErrorResponse:
+    properties:
+      response:
+        example: cant short long url
+        type: string
+    type: object
+  entity.ShortLinkExistsResponse:
+    properties:
+      response:
+        example: url already exists
+        type: string
+    type: object
+  entity.ShortLinkNotExistsResponse:
+    properties:
+      response:
+        example: url not found
+        type: string
+    type: object
+  entity.ShortLinkOkResponse:
+    properties:
+      response:
+        example: http://domain/yjMl1vl
+        type: string
+    type: object
+  entity.ShortLinkValidateResponse:
+    properties:
+      response:
+        example: url is invalid
         type: string
     type: object
   entity.User404Responsse:
@@ -201,6 +238,61 @@ paths:
       summary: Verify User Account
       tags:
       - Auth
+  /link/{key}:
+    get:
+      consumes:
+      - application/json
+      description: Redirect short url to your main url
+      parameters:
+      - description: url key
+        in: path
+        name: key
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ShortLinkOkResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ShortLinkNotExistsResponse'
+      summary: Redirect URL
+      tags:
+      - URL
+  /link/create-short:
+    post:
+      consumes:
+      - application/json
+      description: Create a short url that redirect to your main url
+      parameters:
+      - description: create short url required body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.LinkRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ShortLinkOkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ShortLinkValidateResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/entity.ShortLinkExistsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.ShortLinkDBErrorResponse'
+      summary: Create Short URL
+      tags:
+      - URL
   /user/change-password/:
     post:
       consumes:
