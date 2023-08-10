@@ -44,16 +44,19 @@ func (s *SignUpController) SignUpHandler(ctx *gin.Context) {
 		log.Panic("error in hash user password : ", err.Error())
 	}
 
-	newUser := models.User{
-		UserInfo: models.BaseUser{Email: data.Email, Password: encryptedPass},
-	}
+	newUser := models.User{UserInfo: models.BaseUser{Email: data.Email, Password: encryptedPass}}
 
 	if err := s.SignUpService.Create(&newUser); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"response": err.Error()})
 		return
 	}
 
-	go s.SignUpService.SendVerifyEmail(data.Email)
+	go func() {
+		err := s.SignUpService.SendVerifyEmail(data.Email)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	accessToken := s.SignUpService.CreateAccessToken(newUser.ID.String(), data.Email)
 	ctx.JSON(http.StatusCreated, gin.H{"access_token": accessToken})

@@ -40,6 +40,6 @@ func main() {
 	server.Use(gin.Recovery())
 	server.Use(gin.Logger())
 	server.Use(cors.Default())
-	routers.SetupRouters(configs.DB, configs.GetRedis(), server)
+	routers.SetupRouters(configs.DB, configs.RDB, server)
 	server.Run(":8000")
 }
