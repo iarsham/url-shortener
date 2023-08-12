@@ -37,7 +37,7 @@ func (l *LoginController) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	if ok, _ := user.VerifyUserPassword(data.Password); !ok {
+	if ok, _ := l.LoginService.VerifyPassword(user.UserInfo.Password, data.Password); !ok {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"response": "password is incorrect"})
 		return
 	}

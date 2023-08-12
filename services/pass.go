@@ -26,3 +26,7 @@ func (p *passwordService) EncryptPassword(password string) (string, error) {
 func (p *passwordService) Save(user *models.User) error {
 	return p.userRepository.Save(user)
 }
+
+func (u *passwordService) VerifyPassword(hashPass, plainPass string) (bool, error) {
+	return u.userRepository.VerifyPassword(hashPass, plainPass)
+}
