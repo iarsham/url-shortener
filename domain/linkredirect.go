@@ -6,4 +6,5 @@ import (
 
 type LinkRedirectRepository interface {
 	CheckLinkExists(key string) (models.Link, bool)
+	Save(link *models.Link) error
 }

@@ -2,12 +2,14 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
 	"github.com/iarsham/url-shortener/configs"
+	"github.com/iarsham/url-shortener/helpers"
 	"github.com/iarsham/url-shortener/routers"
 )
 
@@ -41,5 +43,15 @@ func main() {
 	server.Use(gin.Logger())
 	server.Use(cors.Default())
 	routers.SetupRouters(configs.DB, configs.RDB, server)
+	go func() {
+		ticker := time.NewTicker(time.Minute) // Run every hour
+
+		for {
+			select {
+			case <-ticker.C:
+				helpers.RemoveExpiredUrls(configs.DB)
+			}
+		}
+	}()
 	server.Run(":8000")
 }
