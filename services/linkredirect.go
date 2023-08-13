@@ -25,3 +25,7 @@ func (l *linkRedirectService) CheckLinkExists(key string) (models.Link, bool) {
 	}
 	return dbLink, true
 }
+
+func (l *linkRedirectService) Save(link *models.Link) error {
+	return l.db.Save(&link).Error
+}

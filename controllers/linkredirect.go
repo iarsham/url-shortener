@@ -28,6 +28,8 @@ func (l *LinkRedirectController) LinkRedirectHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"response": "url not found"})
 		return
 	}
+	dbLink.ViewCount += 1
+	l.LinkRedirectService.Save(&dbLink)
 
-	ctx.JSON(http.StatusOK, gin.H{"response": dbLink.LongUrl})
+	ctx.JSON(http.StatusOK, gin.H{"response": dbLink.LongUrl, "views": dbLink.ViewCount})
 }
