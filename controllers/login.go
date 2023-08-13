@@ -37,11 +37,11 @@ func (l *LoginController) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	if ok, _ := l.LoginService.VerifyPassword(user.UserInfo.Password, data.Password); !ok {
+	if ok, _ := l.LoginService.VerifyPassword(user.Password, data.Password); !ok {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"response": "password is incorrect"})
 		return
 	}
 
 	accessToken := l.LoginService.CreateAccessToken(user.ID.String(), data.Email)
-	ctx.JSON(http.StatusCreated, gin.H{"access_token": accessToken})
+	ctx.JSON(http.StatusOK, gin.H{"access_token": accessToken})
 }

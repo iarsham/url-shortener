@@ -39,7 +39,7 @@ func (p *PasswordController) PasswordChangeHandler(ctx *gin.Context) {
 		return
 	}
 
-	if ok, _ := p.PasswordService.VerifyPassword(user.UserInfo.Password, data.CurrentPassword); !ok {
+	if ok, _ := p.PasswordService.VerifyPassword(user.Password, data.CurrentPassword); !ok {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"response": "current password is incorrect"})
 		return
 	}
@@ -50,7 +50,7 @@ func (p *PasswordController) PasswordChangeHandler(ctx *gin.Context) {
 	}
 
 	newPass, _ := p.PasswordService.EncryptPassword(data.Password)
-	user.UserInfo.Password = newPass
+	user.Password = newPass
 
 	if err := p.PasswordService.Save(&user); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"response": "password change failed"})
