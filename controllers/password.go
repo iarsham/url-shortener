@@ -39,7 +39,7 @@ func (p *PasswordController) PasswordChangeHandler(ctx *gin.Context) {
 		return
 	}
 
-	if ok, _ := user.VerifyUserPassword(data.CurrentPassword); !ok {
+	if ok, _ := p.PasswordService.VerifyPassword(user.UserInfo.Password, data.CurrentPassword); !ok {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"response": "current password is incorrect"})
 		return
 	}

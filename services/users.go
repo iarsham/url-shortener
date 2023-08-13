@@ -49,6 +49,10 @@ func (u *userRepository) EncryptPassword(password string) (string, error) {
 	return helpers.Hash(password)
 }
 
+func (u *userRepository) VerifyPassword(hashPass, plainPass string) (bool, error) {
+	return helpers.VerifyHash(hashPass, plainPass)
+}
+
 func (u *userRepository) Save(user *models.User) error {
 	err := u.db.Save(&user).Error
 	return err

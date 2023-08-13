@@ -19,7 +19,11 @@ func LoginRepositoryImpl(userRepository domain.UserRepository) domain.LoginRepos
 func (l *loginService) GetUserByEmail(email string) (models.User, error) {
 	return l.userRepository.GetUserByEmail(email)
 }
+
 func (l *loginService) CreateAccessToken(userID, email string) string {
 	return helpers.GenerateJWT(userID, email)
 }
 
+func (u *loginService) VerifyPassword(hashPass, plainPass string) (bool, error) {
+	return u.userRepository.VerifyPassword(hashPass, plainPass)
+}
