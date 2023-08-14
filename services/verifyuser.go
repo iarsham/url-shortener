@@ -28,7 +28,7 @@ func (v *verifyUserService) Save(user *models.User) error {
 }
 
 func (v *verifyUserService) CheckUserStatus(user *models.User) bool {
-	if user.UserInfo.IsActive {
+	if user.IsActive {
 		return true
 	} else {
 		return false

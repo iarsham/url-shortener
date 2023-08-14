@@ -36,7 +36,7 @@ func (v *VerifyUserController) VerifyUserHandler(ctx *gin.Context) {
 		return
 	}
 
-	user.UserInfo.IsActive = true
+	user.IsActive = true
 
 	if err := v.VerifyUserService.Save(&user); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"reponse": "failed to verify user"})

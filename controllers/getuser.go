@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/iarsham/url-shortener/domain"
-	"github.com/iarsham/url-shortener/entity"
+	// "github.com/iarsham/url-shortener/entity"
 )
 
 type GetUserController struct {
@@ -23,18 +23,11 @@ type GetUserController struct {
 func (g *GetUserController) GetUserHandler(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 
-	user, err := g.UserService.GetUserByID(userID)
+	user, err := g.UserService.GetUserWithLinks(userID)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"response": "user not found"})
+		ctx.JSON(http.StatusNotFound, gin.H{"response": err.Error()})
 		return
 	}
 
-	userResponse := entity.UserResponse{
-		ID:        user.ID,
-		Email:     user.UserInfo.Email,
-		IsActive:  user.UserInfo.IsActive,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
-	}
-	ctx.JSON(http.StatusOK, userResponse)
+	ctx.JSON(http.StatusOK, user)
 }

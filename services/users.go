@@ -78,3 +78,9 @@ func (u *userRepository) GetUserFromCache(key string) (models.User, error) {
 	u.rdb.Del(context.Background(), key)
 	return dbUser, nil
 }
+
+func (u *userRepository) GetUserWithLinks(userID string) (models.User, error) {
+	var dbUser models.User
+	err := u.db.Preload("Links").Where("id = ?",userID).First(&dbUser).Error
+	return dbUser, err
+}
