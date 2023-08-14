@@ -23,9 +23,9 @@ type GetUserController struct {
 func (g *GetUserController) GetUserHandler(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 
-	user, err := g.UserService.GetUserByID(userID)
+	user, err := g.UserService.GetUserWithLinks(userID)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"response": "user not found"})
+		ctx.JSON(http.StatusNotFound, gin.H{"response": err.Error()})
 		return
 	}
 
