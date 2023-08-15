@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -48,6 +49,12 @@ func IsValidURL(u string) bool {
 	if err != nil {
 		return false
 	}
+	if !strings.Contains(parsedURL.String(), "://") {
+		return false
+	}
+	if domain := os.Getenv("FRONTEND_DOMAIN"); !strings.HasSuffix(domain, "/") {
+		os.Setenv("FRONTEND_DOMAIN", domain+"/")
+	}
 	return parsedURL.Scheme == "http" || parsedURL.Scheme == "https"
 }
 
@@ -63,7 +70,7 @@ func MakeShortURL() (string, string) {
 func CustomShortURL(key string) string {
 	domain := os.Getenv("FRONTEND_DOMAIN")
 	if !IsValidURL(domain) {
-		panic("domain in env is not valid")
+		log.Panic("domain in env is not valid")
 	}
 	return domain + key
 }
