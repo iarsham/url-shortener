@@ -59,3 +59,11 @@ func MakeShortURL() (string, string) {
 	}
 	return domain + key, key
 }
+
+func CustomShortURL(key string) string {
+	domain := os.Getenv("FRONTEND_DOMAIN")
+	if !IsValidURL(domain) {
+		panic("domain in env is not valid")
+	}
+	return domain + key
+}
