@@ -32,6 +32,16 @@ func (s *shortLinkService) CheckLinkExists(url, userID string) bool {
 	return dbLink.ID != 0
 }
 
+func (s *shortLinkService) CheckShortLinkExists(shortURL string) bool {
+	var dbLink models.Link
+	s.db.Where("short_url = ?", shortURL).First(&dbLink)
+	return dbLink.ID != 0
+}
+
 func (s *shortLinkService) RandomShortURL() (string, string) {
 	return helpers.MakeShortURL()
+}
+
+func (s *shortLinkService) CustomShortURL(key string) string {
+	return helpers.CustomShortURL(key)
 }
