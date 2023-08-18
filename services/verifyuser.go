@@ -9,9 +9,9 @@ type verifyUserService struct {
 	userRepository domain.UserRepository
 }
 
-func VerifyUserServiceImpl(userRepository domain.UserRepository) domain.VerifyUserRepository {
+func VerifyUserServiceImpl(userRepo domain.UserRepository) domain.VerifyUserRepository {
 	return &verifyUserService{
-		userRepository: userRepository,
+		userRepository: userRepo,
 	}
 }
 

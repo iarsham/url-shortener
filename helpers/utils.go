@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"log"
 	"net/url"
 	"os"
 	"strconv"
@@ -29,7 +28,7 @@ func VerifyHash(hash string, plain string) (bool, error) {
 	return true, nil
 }
 
-func GenerateJWT(userId, email string) (tokenString string) {
+func GenerateJWT(userId, email string) (string, error) {
 	ttl, _ := strconv.Atoi(os.Getenv("EXPIRE_JWT_TOKEN_Minutes"))
 	cliams := jwt.MapClaims{
 		"user_id": userId,
@@ -39,9 +38,9 @@ func GenerateJWT(userId, email string) (tokenString string) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &cliams)
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
-		log.Fatal("generate jwt failed :", err)
+		return "", err
 	}
-	return
+	return tokenString, nil
 }
 
 func IsValidURL(u string) bool {
@@ -70,7 +69,7 @@ func MakeShortURL() (string, string) {
 func CustomShortURL(key string) string {
 	domain := os.Getenv("FRONTEND_DOMAIN")
 	if !IsValidURL(domain) {
-		log.Panic("domain in env is not valid")
+		panic("domain in env is not valid")
 	}
 	return domain + key
 }

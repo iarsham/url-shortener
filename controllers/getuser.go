@@ -25,7 +25,7 @@ func (g *GetUserController) GetUserHandler(ctx *gin.Context) {
 
 	user, err := g.UserService.GetUserWithLinks(userID)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"response": err.Error()})
+		ctx.JSON(http.StatusNotFound, gin.H{"response": "user not found"})
 		return
 	}
 

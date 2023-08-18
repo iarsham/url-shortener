@@ -2,7 +2,6 @@ package services
 
 import (
 	"github.com/iarsham/url-shortener/domain"
-	"github.com/iarsham/url-shortener/helpers"
 	"github.com/iarsham/url-shortener/models"
 )
 
@@ -10,9 +9,9 @@ type signUpService struct {
 	userRepository domain.UserRepository
 }
 
-func SignUpRepositoryImpl(userRepository domain.UserRepository) domain.SignUpRepository {
+func SignUpRepositoryImpl(userRepo domain.UserRepository) domain.SignUpRepository {
 	return &signUpService{
-		userRepository: userRepository,
+		userRepository: userRepo,
 	}
 }
 
@@ -25,13 +24,13 @@ func (s *signUpService) GetUserByEmail(email string) (models.User, error) {
 }
 
 func (s *signUpService) CreateAccessToken(userID, email string) string {
-	return helpers.GenerateJWT(userID, email)
+	return s.userRepository.CreateAccessToken(userID, email)
 }
 
-func (s *signUpService) EncryptPassword(password string) (string, error) {
+func (s *signUpService) EncryptPassword(password string) string {
 	return s.userRepository.EncryptPassword(password)
 }
 
-func (s *signUpService)SendVerifyEmail(email string) error{
+func (s *signUpService) SendVerifyEmail(email string) error {
 	return s.userRepository.SendVerifyEmail(email)
 }
