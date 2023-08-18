@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,25 +37,13 @@ func (s *SignUpController) SignUpHandler(ctx *gin.Context) {
 		return
 	}
 
-	encryptedPass, err := s.SignUpService.EncryptPassword(data.Password)
-
-	if err != nil {
-		log.Panic("error in hash user password : ", err.Error())
-	}
-
-	newUser := models.User{Email: data.Email, Password: encryptedPass}
-
+	newUser := models.User{Email: data.Email, Password: s.SignUpService.EncryptPassword(data.Password)}
 	if err := s.SignUpService.Create(&newUser); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"response": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"response": "craete user failed"})
 		return
 	}
 
-	go func() {
-		err := s.SignUpService.SendVerifyEmail(data.Email)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
+	go s.SignUpService.SendVerifyEmail(data.Email)
 
 	accessToken := s.SignUpService.CreateAccessToken(newUser.ID.String(), data.Email)
 	ctx.JSON(http.StatusCreated, gin.H{"access_token": accessToken})

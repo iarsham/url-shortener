@@ -9,9 +9,9 @@ type passwordService struct {
 	userRepository domain.UserRepository
 }
 
-func PasswordServiceImpl(userRepository domain.UserRepository) domain.PasswordRepository {
+func PasswordServiceImpl(userRepo domain.UserRepository) domain.PasswordRepository {
 	return &passwordService{
-		userRepository: userRepository,
+		userRepository: userRepo,
 	}
 }
 
@@ -19,7 +19,7 @@ func (p *passwordService) GetUserByID(id string) (models.User, error) {
 	return p.userRepository.GetUserByID(id)
 }
 
-func (p *passwordService) EncryptPassword(password string) (string, error) {
+func (p *passwordService) EncryptPassword(password string) string{
 	return p.userRepository.EncryptPassword(password)
 }
 

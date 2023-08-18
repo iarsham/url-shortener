@@ -20,8 +20,9 @@ func init() {
 			log.Fatal("error in loading .env file")
 		}
 	}
-	configs.GetDB()
-	configs.GetRedis()
+	lg := configs.NewLogger()
+	configs.GetDB(lg)
+	configs.GetRedis(lg)
 }
 
 // @title			UrlShortener Swagger Document
@@ -42,10 +43,10 @@ func main() {
 	server.Use(gin.Recovery())
 	server.Use(gin.Logger())
 	server.Use(cors.Default())
-	routers.SetupRouters(configs.DB, configs.RDB, server)
+	lg := configs.NewLogger()
+	routers.SetupRouters(configs.DB, configs.RDB, lg, server)
 	go func() {
-		ticker := time.NewTicker(time.Minute) // Run every hour
-
+		ticker := time.NewTicker(time.Minute)
 		for {
 			select {
 			case <-ticker.C:
@@ -53,5 +54,7 @@ func main() {
 			}
 		}
 	}()
-	server.Run(":8000")
+	if err := server.Run(":8000"); err != nil {
+		lg.Logger.Fatal(err.Error())
+	}
 }

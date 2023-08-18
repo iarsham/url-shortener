@@ -56,7 +56,7 @@ func (s *ShortLinkController) CreateShortLinkHandler(ctx *gin.Context) {
 
 	newLink := models.Link{LongUrl: data.URL, ShortUrl: shortLink, Keyword: key, UserID: userID}
 	if err := s.ShortLinkService.CreateShortLink(&newLink); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"response": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"response": "create short url failed"})
 		return
 	}
 
