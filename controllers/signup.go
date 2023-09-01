@@ -1,9 +1,10 @@
 package controllers
 
 import (
-	"net/http"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"net/http"
 
 	"github.com/iarsham/url-shortener/domain"
 	"github.com/iarsham/url-shortener/entity"
@@ -15,7 +16,7 @@ type SignUpController struct {
 }
 
 // @Summary 		Register User
-// @Description		register user with email and password and sending verfication email
+// @Description		register user with email and password and sending verification email
 // @Tags			Auth
 // @Accept			json
 // @Router			/auth/signup/ [post]
@@ -37,14 +38,14 @@ func (s *SignUpController) SignUpHandler(ctx *gin.Context) {
 		return
 	}
 
-	newUser := models.User{Email: data.Email, Password: s.SignUpService.EncryptPassword(data.Password)}
+	newUser := models.User{ID: uuid.New(), Email: data.Email, Password: s.SignUpService.EncryptPassword(data.Password)}
 	if err := s.SignUpService.Create(&newUser); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"response": "craete user failed"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"response": "create user failed"})
 		return
 	}
+	fmt.Println(newUser.ID)
 
 	go s.SignUpService.SendVerifyEmail(data.Email)
-
 	accessToken := s.SignUpService.CreateAccessToken(newUser.ID.String(), data.Email)
 	ctx.JSON(http.StatusCreated, gin.H{"access_token": accessToken})
 }

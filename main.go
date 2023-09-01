@@ -40,8 +40,6 @@ func init() {
 // @accept json
 func main() {
 	server := gin.Default()
-	server.Use(gin.Recovery())
-	server.Use(gin.Logger())
 	server.Use(cors.Default())
 	lg := configs.NewLogger()
 	routers.SetupRouters(configs.DB, configs.RDB, lg, server)
