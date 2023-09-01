@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"context"
 	"os"
 
 	"github.com/redis/go-redis/v9"
@@ -20,7 +21,9 @@ func GetDB(lg *CustomLogger) (*gorm.DB, error) {
 		lg.Logger.Fatal(err.Error())
 	}
 	lg.Logger.Println("Mysql is Connected Successfuly!")
-	DB.AutoMigrate(&models.User{}, &models.Link{})
+	if err := DB.AutoMigrate(&models.User{}, &models.Link{}); err != nil {
+		lg.Logger.Fatal(err.Error())
+	}
 	lg.Logger.Println("Tables migrations was successfully")
 	return DB, nil
 }
@@ -31,6 +34,9 @@ func GetRedis(lg *CustomLogger) *redis.Client {
 		Password: "",
 		DB:       0,
 	})
+	if _, err := RDB.Ping(context.Background()).Result(); err != nil  {
+		lg.Logger.Fatal(err.Error())
+	}
 	lg.Logger.Println("Redis is Connected Successfuly!")
 	return RDB
 }
