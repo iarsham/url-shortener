@@ -3,17 +3,20 @@ package services
 import (
 	"gorm.io/gorm"
 
+	"github.com/iarsham/url-shortener/configs"
 	"github.com/iarsham/url-shortener/domain"
 	"github.com/iarsham/url-shortener/models"
 )
 
 type linkRedirectService struct {
 	db *gorm.DB
+	*configs.CustomLogger
 }
 
-func LinkRedirectRepositoryImpl(db *gorm.DB) domain.LinkRedirectRepository {
+func LinkRedirectRepositoryImpl(db *gorm.DB, lg *configs.CustomLogger) domain.LinkRedirectRepository {
 	return &linkRedirectService{
-		db: db,
+		db:           db,
+		CustomLogger: lg,
 	}
 }
 
@@ -27,5 +30,11 @@ func (l *linkRedirectService) CheckLinkExists(key string) (models.Link, bool) {
 }
 
 func (l *linkRedirectService) Save(link *models.Link) error {
-	return l.db.Save(&link).Error
+	err := l.db.Save(&link).Error
+	if err != nil {
+		l.Logger.Fatal(err.Error())
+		return err
+	}
+	l.Logger.Printf("link (%s) received a new view", link.ShortUrl)
+	return err
 }

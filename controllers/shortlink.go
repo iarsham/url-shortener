@@ -40,15 +40,23 @@ func (s *ShortLinkController) CreateShortLinkHandler(ctx *gin.Context) {
 	}
 
 	if ok := s.ShortLinkService.CheckLinkExists(data.URL, userID); ok {
-		ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{"response": "url already exists"})
+		ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{"response": "short url with this long url already exists"})
 		return
 	}
 
 	shortLink, key := s.ShortLinkService.RandomShortURL()
-	newLink := models.Link{LongUrl: data.URL, ShortUrl: shortLink, Keyword: key, UserID: userID}
+	if data.Param != "" {
+		shortLink, key = s.ShortLinkService.CustomShortURL(data.Param), data.Param
+	}
 
+	if ok := s.ShortLinkService.CheckShortLinkExists(shortLink); ok {
+		ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{"response": "short url with this param already exists"})
+		return
+	}
+
+	newLink := models.Link{LongUrl: data.URL, ShortUrl: shortLink, Keyword: key, UserID: userID}
 	if err := s.ShortLinkService.CreateShortLink(&newLink); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"response": "cant short long url"})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"response": "create short url failed"})
 		return
 	}
 

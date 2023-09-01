@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,33 +9,33 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 
+	"github.com/iarsham/url-shortener/configs"
 	"github.com/iarsham/url-shortener/docs"
 	"github.com/iarsham/url-shortener/helpers"
 )
 
 func RedirectToDocs(ctx *gin.Context) {
-	fmt.Println(ctx.Request.Host)
 	ctx.Redirect(http.StatusMovedPermanently, "/docs/index.html")
 }
 
-func SetupRouters(db *gorm.DB, rdb *redis.Client, gin *gin.Engine) {
-	swaggerRoute := gin.Group("")
+func SetupRouters(db *gorm.DB, rdb *redis.Client, lg *configs.CustomLogger, g *gin.Engine) {
+	swaggerRoute := g.Group("")
 	docs.SwaggerInfo.BasePath = "/api/"
 	swaggerRoute.GET("/", RedirectToDocs)
 	swaggerRoute.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	authRoute := gin.Group("/api/auth")
-	SignUpRouter(db, rdb, authRoute)
-	LoginRouter(db, rdb, authRoute)
-	VerifyUserRouter(db, rdb, authRoute)
+	authRoute := g.Group("/api/auth")
+	SignUpRouter(db, rdb, lg, authRoute)
+	LoginRouter(db, rdb, lg, authRoute)
+	VerifyUserRouter(db, rdb, lg, authRoute)
 
-	userRoute := gin.Group("/api/user")
+	userRoute := g.Group("/api/user")
 	userRoute.Use(helpers.JwtAuthMiddelware())
-	GetUserRouter(db, rdb, userRoute)
-	DeleteUserRouter(db, rdb, userRoute)
-	PasswordRouter(db, rdb, userRoute)
+	GetUserRouter(db, rdb, lg, userRoute)
+	DeleteUserRouter(db, rdb, lg, userRoute)
+	PasswordRouter(db, rdb, lg, userRoute)
 
-	linkRoute := gin.Group("/api/link")
-	ShortLinkRouter(db, linkRoute)
-	LinkRedirectRouter(db, linkRoute)
+	linkRoute := g.Group("/api/link")
+	ShortLinkRouter(db, lg, linkRoute)
+	LinkRedirectRouter(db, lg, linkRoute)
 }

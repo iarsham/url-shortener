@@ -49,9 +49,7 @@ func (p *PasswordController) PasswordChangeHandler(ctx *gin.Context) {
 		return
 	}
 
-	newPass, _ := p.PasswordService.EncryptPassword(data.Password)
-	user.Password = newPass
-
+	user.Password = p.PasswordService.EncryptPassword(data.Password)
 	if err := p.PasswordService.Save(&user); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"response": "password change failed"})
 		return
