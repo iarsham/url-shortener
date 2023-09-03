@@ -2,15 +2,18 @@ package helpers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/iarsham/url-shortener/models"
+	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
+	"time"
 )
 
-func JwtAuthMiddelware() gin.HandlerFunc {
+func JwtAuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authHeader := ctx.Request.Header.Get("Authorization")
 		if authHeader == "" {
@@ -30,20 +33,47 @@ func JwtAuthMiddelware() gin.HandlerFunc {
 			return
 		}
 
-		cliams, _ := token.Claims.(jwt.MapClaims)
+		claims, _ := token.Claims.(jwt.MapClaims)
 
-		ctx.Set("user_id", cliams["user_id"])
-		ctx.Set("email", cliams["email"])
+		ctx.Set("user_id", claims["user_id"])
+		ctx.Set("email", claims["email"])
 		ctx.Next()
 	}
 }
 
-func QueryParamMiddelware(param string) gin.HandlerFunc {
+func QueryParamMiddleware(param string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		queryParam := ctx.Query(param)
 
 		if queryParam == "" {
 			ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{"response": fmt.Sprintf("missing ( ?%s= ) query parameter", param)})
+			return
+		}
+
+		ctx.Next()
+	}
+}
+
+func RateLimitMiddleware(rdb *redis.Client, db *gorm.DB, limit, burst int) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var user models.User
+		db.Where("email = ?", ctx.GetString("email")).First(&user)
+		clientIP := ctx.ClientIP()
+		rateCount, err := rdb.Get(ctx, clientIP).Int()
+
+		if err != nil && err != redis.Nil {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"response": "Internal server error"})
+			return
+		}
+
+		if !user.IsActive {
+			rdb.Incr(ctx, clientIP)
+			rdb.Expire(ctx, clientIP, time.Duration(limit)*time.Hour)
+		}
+
+		if !user.IsActive && rateCount >= burst {
+			seconds := rdb.TTL(ctx, clientIP).Val() / 1000000000
+			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"response": "To many requests", "try after": fmt.Sprintf("%d seconds", seconds)})
 			return
 		}
 

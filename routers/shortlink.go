@@ -6,7 +6,6 @@ import (
 
 	"github.com/iarsham/url-shortener/configs"
 	"github.com/iarsham/url-shortener/controllers"
-	"github.com/iarsham/url-shortener/helpers"
 	"github.com/iarsham/url-shortener/services"
 )
 
@@ -17,5 +16,5 @@ func ShortLinkRouter(db *gorm.DB, lg *configs.CustomLogger, r *gin.RouterGroup) 
 		ShortLinkService: linkRepo,
 	}
 
-	r.POST("/create-short", helpers.JwtAuthMiddelware(), shortLinkController.CreateShortLinkHandler)
+	r.POST("/create-short", shortLinkController.CreateShortLinkHandler)
 }

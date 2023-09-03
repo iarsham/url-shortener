@@ -30,12 +30,16 @@ func SetupRouters(db *gorm.DB, rdb *redis.Client, lg *configs.CustomLogger, g *g
 	VerifyUserRouter(db, rdb, lg, authRoute)
 
 	userRoute := g.Group("/api/user")
-	userRoute.Use(helpers.JwtAuthMiddelware())
+	userRoute.Use(helpers.JwtAuthMiddleware())
 	GetUserRouter(db, rdb, lg, userRoute)
 	DeleteUserRouter(db, rdb, lg, userRoute)
 	PasswordRouter(db, rdb, lg, userRoute)
 
 	linkRoute := g.Group("/api/link")
+	linkRoute.Use(helpers.JwtAuthMiddleware())
+	linkRoute.Use(helpers.RateLimitMiddleware(rdb, db, 24, 30))
 	ShortLinkRouter(db, lg, linkRoute)
-	LinkRedirectRouter(db, lg, linkRoute)
+
+	linkRoute2 := g.Group("/api/link")
+	LinkRedirectRouter(db, lg, linkRoute2)
 }

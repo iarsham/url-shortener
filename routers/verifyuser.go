@@ -18,5 +18,5 @@ func VerifyUserRouter(db *gorm.DB, rdb *redis.Client, lg *configs.CustomLogger, 
 		VerifyUserService: services.VerifyUserServiceImpl(userRepo),
 	}
 
-	r.POST("/verify-user", helpers.QueryParamMiddelware("key"), verifyUserController.VerifyUserHandler)
+	r.POST("/verify-user", helpers.QueryParamMiddleware("key"), verifyUserController.VerifyUserHandler)
 }
